@@ -3,320 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>💙 Heart's Journey: Time Capsule of Love 💙</title>
+    <title>💙 Time Capsule of Love 💙</title>
     <style>
         * {
             box-sizing: border-box;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background: linear-gradient(145deg, #0a1628 0%, #061020 100%);
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
             padding: 16px;
-            margin: 0;
         }
 
         .app-container {
-            background: rgba(25, 55, 95, 0.2);
-            backdrop-filter: blur(3px);
-            border-radius: 56px;
-            padding: 12px;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        .main-panel {
-            max-width: 800px;
-            width: 100%;
-            background: #f0f4fa;
-            border-radius: 40px;
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 48px;
             overflow: hidden;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .screen {
-            padding: 20px 20px 28px;
+            padding: 24px;
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
-        .game-area {
-            text-align: center;
-        }
-
-        .canvas-wrapper {
-            background: #e3eef9;
-            border-radius: 36px;
+        /* Game Styles */
+        .game-header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            margin: 0 auto;
-            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
-            position: relative;
+            margin-bottom: 20px;
+            background: #e3f2fd;
+            padding: 12px 20px;
+            border-radius: 60px;
+        }
+
+        .heart-counter {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1565c0;
+        }
+
+        .reset-btn {
+            background: #42a5f5;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .canvas-container {
+            background: #e8f4ff;
+            border-radius: 32px;
+            padding: 10px;
+            margin-bottom: 15px;
         }
 
         canvas {
             display: block;
-            border-radius: 36px;
             width: 100%;
             height: auto;
-            touch-action: none;
+            background: #e8f4ff;
+            border-radius: 24px;
             cursor: grab;
-            background: #e3eef9;
+            touch-action: none;
         }
 
-        .game-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.4rem;
-            padding: 10px 16px 5px;
-            color: #1e4a76;
+        .game-message {
+            background: #bbdef5;
+            padding: 12px;
+            border-radius: 40px;
+            text-align: center;
+            color: #0d47a1;
+            font-weight: 500;
         }
 
-        .retry-btn {
-            background: #6c9ebf;
-            border: none;
-            font-size: 0.9rem;
-            padding: 6px 18px;
-            border-radius: 60px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-        }
-
-        .code-section, .capsule-section {
-            background: #e8f0fe;
-            border-radius: 48px;
-            padding: 1.5rem;
-            margin-top: 10px;
+        /* Code Screen */
+        .code-container {
             text-align: center;
         }
 
-        input, textarea {
-            padding: 12px 18px;
-            font-size: 1rem;
+        .code-container h2 {
+            color: #1565c0;
+            margin-bottom: 15px;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #90caf9;
             border-radius: 60px;
-            border: 2px solid #8bb9da;
-            width: 90%;
-            max-width: 280px;
             text-align: center;
+            margin: 15px 0;
             font-family: monospace;
-            background: white;
-            outline: none;
+        }
+
+        .blue-btn {
+            background: #1e88e5;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        .error-msg {
+            color: #d32f2f;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        /* Capsule Styles */
+        .capsule-header {
+            text-align: center;
+            color: #1565c0;
+            margin-bottom: 20px;
+        }
+
+        .two-columns {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .column h3 {
+            color: #0d47a1;
+            margin-bottom: 10px;
+            font-size: 1rem;
         }
 
         textarea {
-            border-radius: 28px;
-            text-align: left;
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #90caf9;
+            border-radius: 20px;
             font-family: inherit;
             resize: vertical;
+            margin-bottom: 10px;
         }
 
-        button {
-            background: #2c6e9e;
-            border: none;
-            padding: 12px 26px;
-            border-radius: 60px;
-            font-weight: bold;
-            font-size: 1rem;
-            color: white;
-            margin: 10px 6px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            background: #1e5480;
-            transform: scale(0.98);
-        }
-
-        .secondary-btn {
-            background: #5a8bb3;
-        }
-
-        .message-box {
-            background: #d4e4f5;
-            padding: 12px;
-            border-radius: 50px;
-            margin: 15px 0;
-            font-weight: 500;
-            color: #1e4a76;
-        }
-
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-            margin: 15px 0;
-        }
-
-        .memory-preview {
-            background: #d9e8f5;
-            border-radius: 32px;
-            padding: 12px;
-            margin: 12px 0;
-            word-break: break-word;
-        }
-
-        .lock-info {
-            background: #c2d6ea;
-            border-radius: 28px;
-            padding: 10px;
+        .file-label {
+            background: #e3f2fd;
+            padding: 8px 12px;
+            border-radius: 40px;
+            display: inline-block;
             font-size: 0.85rem;
-            margin-top: 15px;
+            color: #1565c0;
+            cursor: pointer;
+        }
+
+        .preview {
+            background: #e8f4ff;
+            border-radius: 20px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .preview img {
+            max-width: 100%;
+            max-height: 100px;
+            border-radius: 16px;
+        }
+
+        .lock-section {
+            background: #e3f2fd;
+            border-radius: 32px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .lock-section input {
+            padding: 12px;
+            border: 2px solid #90caf9;
+            border-radius: 40px;
+            margin: 10px 0;
+        }
+
+        .status-box {
+            background: #bbdef5;
+            padding: 15px;
+            border-radius: 28px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .locked-message {
+            background: #ffccbc;
+            color: #bf360c;
+            padding: 20px;
+            border-radius: 32px;
+            text-align: center;
+        }
+
+        .open-btn {
+            background: #43a047;
+            width: 100%;
         }
 
         hr {
             margin: 20px 0;
-            border-color: #8bb9da;
-        }
-
-        h2, h3 {
-            color: #1e4a76;
-        }
-
-        @media (max-width: 550px) {
-            .screen { padding: 16px; }
-            .game-stats { font-size: 1.2rem; }
-            button { padding: 10px 18px; }
+            border-color: #90caf9;
         }
     </style>
 </head>
 <body>
 <div class="app-container">
-    <div class="main-panel">
+    <div class="card">
         <!-- GAME SCREEN -->
         <div id="gameScreen" class="screen">
-            <div class="game-area">
-                <div class="game-stats">
-                    <span>💙 Hearts: <span id="heartCount">0</span> / 10</span>
-                    <button id="resetGameBtn" class="retry-btn">⟳ Try Again</button>
-                </div>
-                <div class="canvas-wrapper">
-                    <canvas id="gameCanvas" width="700" height="450" style="width:100%; height:auto; max-width:700px; aspect-ratio:700/450"></canvas>
-                </div>
-                <div class="message-box" id="gameMessage">💙 Move the catcher to catch 10 hearts! 💙</div>
+            <div class="game-header">
+                <span class="heart-counter">💙 Hearts: <span id="heartCount">0</span>/10</span>
+                <button id="resetGameBtn" class="reset-btn">⟳ Try Again</button>
             </div>
+            <div class="canvas-container">
+                <canvas id="gameCanvas" width="450" height="500" style="width:100%; height:auto; aspect-ratio:450/500"></canvas>
+            </div>
+            <div class="game-message" id="gameMessage">💙 Move left/right to catch hearts! 💙</div>
         </div>
 
         <!-- SECRET CODE SCREEN -->
         <div id="codeScreen" class="screen hidden">
-            <div class="code-section">
-                <h2>🔐 The Secret of Our Beginning 🔐</h2>
-                <p>You caught all hearts! Now enter the special date<br> <strong>when you said YES to my courtship</strong> 💌</p>
-                <input type="text" id="secretDateInput" placeholder="e.g., 2025-02-14" autocomplete="off">
-                <div>
-                    <button id="verifyDateBtn">✨ Unlock Time Capsule ✨</button>
-                </div>
-                <div id="codeErrorMsg" style="color:#c2446b; font-size:0.9rem; margin-top: 12px;"></div>
-                <div class="lock-info">💡 Hint: The exact date you gave me permission to court you.</div>
+            <div class="code-container">
+                <h2>🔐 The Secret Date 🔐</h2>
+                <p>Enter the exact date you said YES to my courtship</p>
+                <input type="text" id="secretDateInput" class="code-input" placeholder="YYYY-MM-DD">
+                <button id="verifyDateBtn" class="blue-btn">✨ Unlock Time Capsule ✨</button>
+                <div id="codeErrorMsg" class="error-msg"></div>
             </div>
         </div>
 
         <!-- TIME CAPSULE SCREEN -->
         <div id="capsuleScreen" class="screen hidden">
-            <div class="capsule-section">
-                <h2>⏳✨ Our Digital Time Capsule ✨⏳</h2>
-                <p>Fill this capsule with letters & memorable pictures. Once locked, it will stay sealed until the chosen future date.<br> 
-                <strong>To open later, we need the same secret code (the date you allowed me to court you).</strong></p>
-                
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <div style="flex:1; min-width: 200px;">
-                        <h3>💌 Your Letter & Memory</h3>
-                        <textarea id="herLetter" rows="4" placeholder="Write your heartfelt letter..."></textarea>
-                        <div class="flex-row">
-                            <label style="background:#c2d6ea; padding:8px 15px; border-radius: 50px;">📸 Your Picture: </label>
-                            <input type="file" id="herImage" accept="image/*">
-                        </div>
-                        <div id="herPreview" class="memory-preview"></div>
+            <div class="capsule-header">
+                <h2>⏳ Our Time Capsule ⏳</h2>
+                <p>Store your memories here</p>
+            </div>
+
+            <!-- EDITABLE SECTION (only visible when not locked) -->
+            <div id="editableSection">
+                <div class="two-columns">
+                    <div class="column">
+                        <h3>💌 Your Letter</h3>
+                        <textarea id="herLetter" rows="4" placeholder="Write your message..."></textarea>
+                        <label class="file-label">📸 Add Picture <input type="file" id="herImage" accept="image/*" style="display:none"></label>
+                        <div id="herPreview" class="preview"></div>
                     </div>
-                    <div style="flex:1; min-width: 200px;">
-                        <h3>💌 My Letter & Memory</h3>
-                        <textarea id="myLetter" rows="4" placeholder="My letter for you..."></textarea>
-                        <div class="flex-row">
-                            <label style="background:#c2d6ea; padding:8px 15px; border-radius: 50px;">📸 My Picture: </label>
-                            <input type="file" id="myImage" accept="image/*">
-                        </div>
-                        <div id="myPreview" class="memory-preview"></div>
+                    <div class="column">
+                        <h3>💌 My Letter</h3>
+                        <textarea id="myLetter" rows="4" placeholder="My message for you..."></textarea>
+                        <label class="file-label">📸 Add Picture <input type="file" id="myImage" accept="image/*" style="display:none"></label>
+                        <div id="myPreview" class="preview"></div>
                     </div>
                 </div>
-                
-                <hr>
-                <h3>🔒 Lock the Capsule</h3>
-                <div class="flex-row">
-                    <div>
-                        <label>📅 Open Capsule Date (YYYY-MM-DD): </label>
-                        <input type="date" id="unlockDate" style="width:auto; display:inline-block;">
-                    </div>
-                </div>
-                <button id="lockCapsuleBtn">💎 Lock Time Capsule 💎</button>
-                <div id="capsuleStatus" class="message-box"></div>
-                
-                <hr>
-                <div id="openCapsuleArea">
-                    <h3>🔓 Open Time Capsule (when date arrives)</h3>
-                    <button id="attemptOpenBtn" class="secondary-btn">📬 Try to Open Capsule</button>
-                    <div id="openResultArea" class="memory-preview" style="background:#d4e4f5;"></div>
+
+                <div class="lock-section">
+                    <h3>🔒 Lock the Capsule</h3>
+                    <p>Choose when to open it:</p>
+                    <input type="date" id="unlockDate">
+                    <button id="lockCapsuleBtn" class="blue-btn">💎 Lock Forever Until That Date 💎</button>
                 </div>
             </div>
+
+            <div id="statusBox" class="status-box"></div>
+
+            <!-- OPEN SECTION (only shows when date is reached) -->
+            <div id="openSection" style="display: none;">
+                <hr>
+                <button id="attemptOpenBtn" class="blue-btn open-btn">📬 Open Time Capsule 📬</button>
+                <div id="openResultArea" class="preview" style="margin-top: 15px;"></div>
+            </div>
+
+            <!-- LOCKED MESSAGE (shows when capsule is locked but date not reached) -->
+            <div id="lockedMessage" class="locked-message" style="display: none;"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // -------------------- 🎮 CLEAN GAME LOGIC --------------------
+    // ==================== GAME - ONE HEART AT A TIME ====================
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    const heartCountSpan = document.getElementById('heartCount');
-    const gameMessageDiv = document.getElementById('gameMessage');
-    
-    // Set canvas dimensions
-    canvas.width = 700;
-    canvas.height = 450;
-    
+    canvas.width = 450;
+    canvas.height = 500;
+
     let hearts = [];
     let caught = 0;
     let gameActive = true;
     let animationId = null;
-    let basketX = canvas.width / 2 - 35;
-    const BASKET_WIDTH = 70;
-    const BASKET_HEIGHT = 30;
-    
-    // Clean heart class
+    let basketX = canvas.width / 2 - 30;
+    const BASKET_WIDTH = 60;
+    const BASKET_HEIGHT = 25;
+    let lastSpawnTime = 0;
+    let frameCount = 0;
+
     class Heart {
         constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.radius = 12;
-            this.speed = 1.5;
+            this.size = 16;
+            this.speed = 2.5; // mas mabilis
         }
         
         draw() {
-            // Draw a clean heart shape
             ctx.save();
             ctx.shadowBlur = 0;
-            ctx.beginPath();
-            const x = this.x, y = this.y, r = this.radius;
-            
-            // Draw heart using bezier curves for clean shape
-            ctx.moveTo(x, y + r/2);
-            ctx.bezierCurveTo(x - r, y - r/2, x - r, y - r*1.5, x, y - r);
-            ctx.bezierCurveTo(x + r, y - r*1.5, x + r, y - r/2, x, y + r/2);
-            
+            ctx.font = `${this.size}px "Segoe UI Emoji"`;
             ctx.fillStyle = "#ff3366";
-            ctx.fill();
-            ctx.fillStyle = "#ff6699";
-            ctx.fill();
+            ctx.fillText("❤️", this.x - 8, this.y + 5);
             ctx.restore();
         }
         
@@ -324,96 +353,89 @@
             this.y += this.speed;
         }
     }
-    
-    // Spawn hearts
-    function spawnHeart() {
+
+    // Paisa-isang spawn
+    function spawnSingleHeart() {
         if (!gameActive) return;
-        if (hearts.length < 15) {
-            let randX = 30 + Math.random() * (canvas.width - 60);
-            hearts.push(new Heart(randX, -20));
+        if (hearts.length < 8) {
+            let randX = 25 + Math.random() * (canvas.width - 50);
+            hearts.push(new Heart(randX, -15));
         }
     }
-    
-    // Draw catcher
+
     function drawBasket() {
-        ctx.fillStyle = "#4a90c4";
+        ctx.fillStyle = "#42a5f5";
         ctx.fillRect(basketX, canvas.height - BASKET_HEIGHT - 5, BASKET_WIDTH, BASKET_HEIGHT);
-        ctx.fillStyle = "#6aaed6";
-        ctx.fillRect(basketX + 5, canvas.height - BASKET_HEIGHT - 10, BASKET_WIDTH - 10, 12);
-        ctx.font = "bold 22px sans-serif";
-        ctx.fillStyle = "#ffffff";
-        ctx.fillText("🤍", basketX + 28, canvas.height - 12);
+        ctx.fillStyle = "#64b5f6";
+        ctx.fillRect(basketX + 5, canvas.height - BASKET_HEIGHT - 10, BASKET_WIDTH - 10, 10);
+        ctx.font = "18px sans-serif";
+        ctx.fillStyle = "white";
+        ctx.fillText("🤍", basketX + 25, canvas.height - 12);
     }
-    
-    // Draw background
+
     function drawBackground() {
-        ctx.fillStyle = "#e3eef9";
+        ctx.fillStyle = "#e8f4ff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw subtle grid
-        ctx.strokeStyle = "#c8d8e8";
-        ctx.lineWidth = 0.5;
-        for (let i = 0; i < canvas.width; i += 40) {
+        // Decorative waves
+        ctx.strokeStyle = "#bbdef5";
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 5; i++) {
             ctx.beginPath();
-            ctx.moveTo(i, 0);
-            ctx.lineTo(i, canvas.height);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(0, i);
-            ctx.lineTo(canvas.width, i);
+            ctx.moveTo(0, canvas.height - 40 - i * 30);
+            ctx.quadraticCurveTo(canvas.width/2, canvas.height - 60 - i * 30, canvas.width, canvas.height - 40 - i * 30);
             ctx.stroke();
         }
     }
-    
-    function drawCanvas() {
+
+    function draw() {
         drawBackground();
-        
-        // Draw all hearts
-        for (let heart of hearts) {
-            heart.draw();
-        }
-        
+        for (let heart of hearts) heart.draw();
         drawBasket();
         
-        // Instructions
-        ctx.fillStyle = "#2c6e9e";
-        ctx.font = "bold 14px 'Segoe UI'";
-        ctx.fillText("← slide finger to move →", canvas.width/2 - 90, 35);
+        ctx.fillStyle = "#1565c0";
+        ctx.font = "12px 'Segoe UI'";
+        ctx.fillText("← slide →", canvas.width/2 - 30, 30);
     }
-    
+
     function updateGame() {
         if (!gameActive) {
-            drawCanvas();
+            draw();
             animationId = requestAnimationFrame(updateGame);
             return;
         }
+
+        frameCount++;
         
-        // Spawn hearts
-        if (hearts.length < 8 && Math.random() < 0.4) {
-            spawnHeart();
-        }
-        if (Math.random() < 0.2 && hearts.length < 12) {
-            spawnHeart();
+        // Paisa-isang spawn - every 40 frames (approx 0.6 seconds)
+        if (frameCount > 35 && hearts.length < 10) {
+            spawnSingleHeart();
+            frameCount = 0;
         }
         
-        // Update heart positions
+        // Small random chance for variety
+        if (Math.random() < 0.02 && hearts.length < 6) {
+            spawnSingleHeart();
+        }
+
+        // Update hearts
         for (let i = 0; i < hearts.length; i++) {
             hearts[i].update();
         }
-        
-        // Collision detection
+
+        // Collision
         for (let i = hearts.length - 1; i >= 0; i--) {
-            const heart = hearts[i];
-            if (heart.y + heart.radius >= canvas.height - BASKET_HEIGHT - 8 &&
-                heart.x > basketX && heart.x < basketX + BASKET_WIDTH) {
+            const h = hearts[i];
+            if (h.y + 12 >= canvas.height - BASKET_HEIGHT - 8 &&
+                h.x + 5 > basketX && h.x - 5 < basketX + BASKET_WIDTH) {
                 hearts.splice(i, 1);
                 if (gameActive && caught < 10) {
                     caught++;
-                    heartCountSpan.innerText = caught;
+                    document.getElementById('heartCount').innerText = caught;
                     
                     if (caught === 10) {
                         gameActive = false;
-                        gameMessageDiv.innerHTML = "🎉✨ AMAZING! All 10 hearts caught! ✨🎉";
+                        document.getElementById('gameMessage').innerHTML = "🎉 PERFECT! 10 hearts caught! 🎉";
                         if (animationId) cancelAnimationFrame(animationId);
                         setTimeout(() => {
                             document.getElementById('gameScreen').classList.add('hidden');
@@ -425,16 +447,16 @@
                 continue;
             }
             
-            if (heart.y - heart.radius > canvas.height + 50) {
+            if (h.y - 12 > canvas.height + 50) {
                 hearts.splice(i, 1);
             }
         }
-        
-        drawCanvas();
+
+        draw();
         animationId = requestAnimationFrame(updateGame);
     }
-    
-    // Handle movement
+
+    // Movement
     function handleMove(clientX) {
         if (!gameActive && caught >= 10) return;
         const rect = canvas.getBoundingClientRect();
@@ -443,7 +465,7 @@
         canvasX = Math.min(Math.max(canvasX, 0), canvas.width - BASKET_WIDTH);
         basketX = canvasX;
     }
-    
+
     canvas.addEventListener('mousemove', (e) => handleMove(e.clientX));
     canvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
@@ -453,25 +475,24 @@
         e.preventDefault();
         if (e.touches[0]) handleMove(e.touches[0].clientX);
     });
-    
+
     function initGame() {
         hearts = [];
         caught = 0;
         gameActive = true;
-        heartCountSpan.innerText = "0";
-        gameMessageDiv.innerHTML = "💙 Move the catcher to catch 10 hearts! 💙";
+        frameCount = 0;
+        document.getElementById('heartCount').innerText = "0";
+        document.getElementById('gameMessage').innerHTML = "💙 Move left/right to catch hearts! 💙";
         basketX = canvas.width / 2 - BASKET_WIDTH / 2;
         
         if (animationId) cancelAnimationFrame(animationId);
         
-        // Spawn initial hearts
-        for (let i = 0; i < 4; i++) {
-            setTimeout(() => spawnHeart(), i * 200);
-        }
+        // Start with 1 heart
+        setTimeout(() => spawnSingleHeart(), 200);
         
         animationId = requestAnimationFrame(updateGame);
     }
-    
+
     document.getElementById('resetGameBtn').addEventListener('click', () => {
         if (animationId) cancelAnimationFrame(animationId);
         initGame();
@@ -479,138 +500,61 @@
         document.getElementById('codeScreen').classList.add('hidden');
         document.getElementById('capsuleScreen').classList.add('hidden');
     });
+
+    // ==================== SECRET CODE ====================
+    const CORRECT_COURTSHIP_DATE = "2025-02-14"; // CHANGE THIS!
     
-    // -------------------- 🔐 SECRET CODE - FIXED! --------------------
-    // ⭐ IMPORTANT: CHANGE THIS TO THE ACTUAL DATE! ⭐
-    const CORRECT_COURTSHIP_DATE = "2025-02-14";  // ← EDIT THIS DATE
-    
-    function normalizeDateString(input) {
+    function normalizeDate(input) {
         let cleaned = input.trim();
-        if (!cleaned) return null;
-        
-        // Try YYYY-MM-DD
         if (cleaned.match(/^\d{4}-\d{1,2}-\d{1,2}$/)) return cleaned;
-        
-        // Try MM/DD/YYYY or DD/MM/YYYY
-        let parts = cleaned.split(/[\/\-\.]/);
+        let parts = cleaned.split(/[\/\-]/);
         if (parts.length === 3) {
             let y, m, d;
-            if (parts[0].length === 4) {
-                y = parts[0]; m = parts[1]; d = parts[2];
-            } else if (parts[2].length === 4) {
-                d = parts[0]; m = parts[1]; y = parts[2];
-            } else {
-                return null;
-            }
-            return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            if (parts[0].length === 4) { y = parts[0]; m = parts[1]; d = parts[2]; }
+            else if (parts[2].length === 4) { d = parts[0]; m = parts[1]; y = parts[2]; }
+            else return null;
+            return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
         }
         return null;
     }
-    
-    document.getElementById('verifyDateBtn').addEventListener('click', function() {
+
+    document.getElementById('verifyDateBtn').addEventListener('click', () => {
         const input = document.getElementById('secretDateInput');
-        const rawDate = input.value;
-        const normalized = normalizeDateString(rawDate);
+        const normalized = normalizeDate(input.value);
         const errorDiv = document.getElementById('codeErrorMsg');
         
-        console.log("Input:", rawDate, "Normalized:", normalized); // Debug
-        
         if (!normalized) {
-            errorDiv.innerText = "💔 Please enter a valid date (YYYY-MM-DD or MM/DD/YYYY)";
+            errorDiv.innerText = "💔 Invalid date! Use YYYY-MM-DD";
             return;
         }
         
         if (normalized === CORRECT_COURTSHIP_DATE) {
             errorDiv.innerText = "";
-            errorDiv.style.color = "#2c6e9e";
-            errorDiv.innerText = "✅ Correct! Opening time capsule...";
-            setTimeout(() => {
-                document.getElementById('codeScreen').classList.add('hidden');
-                document.getElementById('capsuleScreen').classList.remove('hidden');
-                loadCapsuleFromStorage();
-            }, 500);
+            document.getElementById('codeScreen').classList.add('hidden');
+            document.getElementById('capsuleScreen').classList.remove('hidden');
+            loadCapsuleFromStorage();
+            updateCapsuleUI();
         } else {
-            errorDiv.innerText = `❌ Wrong date! Try again. Remember the exact day you said YES. ❌`;
-            errorDiv.style.color = "#c2446b";
+            errorDiv.innerText = "❌ Wrong date! Try again ❌";
             input.value = "";
-            input.focus();
         }
     });
-    
-    // -------------------- TIME CAPSULE FUNCTIONS --------------------
+
+    // ==================== TIME CAPSULE ====================
     let capsuleLocked = false;
     let capsuleUnlockDate = null;
     let herImageBase64 = "", myImageBase64 = "";
     
-    function saveCapsuleToLocal() {
-        const capsuleData = {
-            locked: capsuleLocked,
-            unlockDate: capsuleUnlockDate,
-            herLetter: document.getElementById('herLetter').value,
-            myLetter: document.getElementById('myLetter').value,
-            herImage: herImageBase64,
-            myImage: myImageBase64,
-        };
-        localStorage.setItem('loveCapsule', JSON.stringify(capsuleData));
-    }
-    
-    function loadCapsuleFromStorage() {
-        const raw = localStorage.getItem('loveCapsule');
-        if (!raw) {
-            capsuleLocked = false;
-            capsuleUnlockDate = null;
-            document.getElementById('herLetter').value = "";
-            document.getElementById('myLetter').value = "";
-            document.getElementById('herPreview').innerHTML = "";
-            document.getElementById('myPreview').innerHTML = "";
-            document.getElementById('capsuleStatus').innerHTML = "💭 No capsule yet. Fill it with love and lock it!";
-            setCapsuleFieldsEditable(true);
-            return;
-        }
-        try {
-            const data = JSON.parse(raw);
-            capsuleLocked = data.locked || false;
-            capsuleUnlockDate = data.unlockDate || null;
-            document.getElementById('herLetter').value = data.herLetter || "";
-            document.getElementById('myLetter').value = data.myLetter || "";
-            herImageBase64 = data.herImage || "";
-            myImageBase64 = data.myImage || "";
-            
-            if (herImageBase64) {
-                document.getElementById('herPreview').innerHTML = `<img src="${herImageBase64}" style="max-width:100%; max-height:130px; border-radius:20px;"><br>📸 Your memory saved`;
-            }
-            if (myImageBase64) {
-                document.getElementById('myPreview').innerHTML = `<img src="${myImageBase64}" style="max-width:100%; max-height:130px; border-radius:20px;"><br>📸 My memory saved`;
-            }
-            
-            if (capsuleLocked && capsuleUnlockDate) {
-                document.getElementById('capsuleStatus').innerHTML = `🔒 Capsule LOCKED until ${capsuleUnlockDate}. Need secret courtship date to open. 🔒`;
-                setCapsuleFieldsEditable(false);
-            } else {
-                setCapsuleFieldsEditable(true);
-                document.getElementById('capsuleStatus').innerHTML = `✨ Capsule is editable. Add memories then lock. ✨`;
-            }
-        } catch(e) {}
-    }
-    
-    function setCapsuleFieldsEditable(editable) {
-        const fields = ['herLetter', 'myLetter', 'herImage', 'myImage', 'unlockDate'];
-        fields.forEach(f => {
-            let el = document.getElementById(f);
-            if (el) el.disabled = !editable;
-        });
-        document.getElementById('lockCapsuleBtn').style.display = editable ? 'inline-block' : 'none';
-    }
-    
+    // File handlers
     document.getElementById('herImage').addEventListener('change', (e) => {
         if (capsuleLocked) return;
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = (ev) => {
                 herImageBase64 = ev.target.result;
-                document.getElementById('herPreview').innerHTML = `<img src="${herImageBase64}" style="max-width:100%; max-height:130px; border-radius:20px;"><br>📸 Your memory saved`;
-                saveCapsuleToLocal();
+                document.getElementById('herPreview').innerHTML = `<img src="${herImageBase64}"><br>📸 Saved`;
+                saveCapsule();
             };
             reader.readAsDataURL(file);
         }
@@ -621,77 +565,146 @@
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(ev) {
+            reader.onload = (ev) => {
                 myImageBase64 = ev.target.result;
-                document.getElementById('myPreview').innerHTML = `<img src="${myImageBase64}" style="max-width:100%; max-height:130px; border-radius:20px;"><br>📸 My memory saved`;
-                saveCapsuleToLocal();
+                document.getElementById('myPreview').innerHTML = `<img src="${myImageBase64}"><br>📸 Saved`;
+                saveCapsule();
             };
             reader.readAsDataURL(file);
         }
     });
     
+    function saveCapsule() {
+        const data = {
+            locked: capsuleLocked,
+            unlockDate: capsuleUnlockDate,
+            herLetter: document.getElementById('herLetter').value,
+            myLetter: document.getElementById('myLetter').value,
+            herImage: herImageBase64,
+            myImage: myImageBase64,
+        };
+        localStorage.setItem('loveCapsule', JSON.stringify(data));
+    }
+    
+    function loadCapsuleFromStorage() {
+        const raw = localStorage.getItem('loveCapsule');
+        if (raw) {
+            const data = JSON.parse(raw);
+            capsuleLocked = data.locked || false;
+            capsuleUnlockDate = data.unlockDate || null;
+            document.getElementById('herLetter').value = data.herLetter || "";
+            document.getElementById('myLetter').value = data.myLetter || "";
+            herImageBase64 = data.herImage || "";
+            myImageBase64 = data.myImage || "";
+            
+            if (herImageBase64) document.getElementById('herPreview').innerHTML = `<img src="${herImageBase64}"><br>📸 Saved`;
+            if (myImageBase64) document.getElementById('myPreview').innerHTML = `<img src="${myImageBase64}"><br>📸 Saved`;
+        }
+    }
+    
+    function updateCapsuleUI() {
+        const today = new Date().toISOString().slice(0, 10);
+        const editableDiv = document.getElementById('editableSection');
+        const lockedMsgDiv = document.getElementById('lockedMessage');
+        const openSectionDiv = document.getElementById('openSection');
+        const statusBox = document.getElementById('statusBox');
+        
+        if (!capsuleLocked) {
+            // Not locked yet - show editable
+            editableDiv.style.display = "block";
+            lockedMsgDiv.style.display = "none";
+            openSectionDiv.style.display = "none";
+            statusBox.innerHTML = "💭 Capsule not locked yet. Add your memories above!";
+            statusBox.style.background = "#e3f2fd";
+        } else {
+            // Locked
+            editableDiv.style.display = "none";
+            
+            if (today >= capsuleUnlockDate) {
+                // Date reached - show open button
+                lockedMsgDiv.style.display = "none";
+                openSectionDiv.style.display = "block";
+                statusBox.innerHTML = `🎉 The time has come! This capsule is ready to open on ${capsuleUnlockDate} 🎉`;
+                statusBox.style.background = "#c8e6c9";
+                statusBox.style.color = "#2e7d32";
+            } else {
+                // Date not reached - show locked message
+                lockedMsgDiv.style.display = "block";
+                openSectionDiv.style.display = "none";
+                lockedMsgDiv.innerHTML = `🔒 COME BACK ON ${capsuleUnlockDate} 🔒<br><br>This time capsule is sealed until that date. Patience, love! 💙`;
+                statusBox.innerHTML = `🔐 Capsule locked! Will open on ${capsuleUnlockDate}`;
+                statusBox.style.background = "#ffccbc";
+                statusBox.style.color = "#bf360c";
+            }
+        }
+    }
+    
     document.getElementById('lockCapsuleBtn').addEventListener('click', () => {
         if (capsuleLocked) {
-            document.getElementById('capsuleStatus').innerHTML = "⚠️ Already locked!";
+            alert("Already locked!");
             return;
         }
-        let unlockDateValue = document.getElementById('unlockDate').value;
-        if (!unlockDateValue) {
-            document.getElementById('capsuleStatus').innerHTML = "❓ Please select a future date to open the capsule!";
+        const unlockDate = document.getElementById('unlockDate').value;
+        if (!unlockDate) {
+            alert("Please select a future date!");
             return;
         }
         const today = new Date().toISOString().slice(0, 10);
-        if (unlockDateValue <= today) {
-            document.getElementById('capsuleStatus').innerHTML = "📅 Choose a date in the future!";
+        if (unlockDate <= today) {
+            alert("Choose a date in the future!");
             return;
         }
+        
         capsuleLocked = true;
-        capsuleUnlockDate = unlockDateValue;
-        saveCapsuleToLocal();
-        setCapsuleFieldsEditable(false);
-        document.getElementById('capsuleStatus').innerHTML = `🔐 Time capsule LOCKED! It will open on ${capsuleUnlockDate}. To open, we need the secret courtship date again. 🔐`;
+        capsuleUnlockDate = unlockDate;
+        saveCapsule();
+        updateCapsuleUI();
     });
     
     document.getElementById('attemptOpenBtn').addEventListener('click', () => {
-        if (!capsuleLocked) {
-            document.getElementById('openResultArea').innerHTML = "💌 Capsule is not locked yet. Write your messages and lock it first!";
+        const today = new Date().toISOString().slice(0, 10);
+        
+        if (today < capsuleUnlockDate) {
+            document.getElementById('openResultArea').innerHTML = `⏳ Not yet! Come back on ${capsuleUnlockDate} ⏳`;
             return;
         }
-        const todayStr = new Date().toISOString().slice(0, 10);
-        if (todayStr >= capsuleUnlockDate) {
-            const userCode = prompt("🔐✨ The time has come! Enter the secret code (the exact date you allowed me to court you) to open the capsule:");
-            if (userCode) {
-                let norm = normalizeDateString(userCode);
-                if (norm === CORRECT_COURTSHIP_DATE) {
-                    let herImgHtml = herImageBase64 ? `<img src="${herImageBase64}" style="max-width:100%; max-height:180px; border-radius:28px;"><br>` : "";
-                    let myImgHtml = myImageBase64 ? `<img src="${myImageBase64}" style="max-width:100%; max-height:180px; border-radius:28px;"><br>` : "";
-                    let content = `
-                        <div style="background:#cfe3fc; padding:16px; border-radius:36px;">
-                            <h3 style="color:#1e4a76;">💖 OPENED TIME CAPSULE 💖</h3>
-                            <p><strong>💌 Your Letter:</strong><br> ${document.getElementById('herLetter').value || "(no letter yet)"}</p>
-                            ${herImgHtml}
-                            <p><strong>💌 My Letter:</strong><br> ${document.getElementById('myLetter').value || "(no letter yet)"}</p>
-                            ${myImgHtml}
-                            <p style="color:#2c6e9e;">✨ Our love, frozen in time. Forever and always. ✨</p>
-                        </div>
-                    `;
-                    document.getElementById('openResultArea').innerHTML = content;
-                } else {
-                    document.getElementById('openResultArea').innerHTML = "❌ Wrong secret code. The capsule remains sealed. ❌";
-                }
-            }
+        
+        // Ask for secret code
+        const code = prompt("🔐 Enter the secret code (the date you said YES to my courtship):");
+        if (!code) return;
+        
+        const normalized = normalizeDate(code);
+        if (normalized === CORRECT_COURTSHIP_DATE) {
+            // Show capsule contents
+            const herLetter = document.getElementById('herLetter').value || "(No letter)";
+            const myLetter = document.getElementById('myLetter').value || "(No letter)";
+            const herImg = herImageBase64 ? `<img src="${herImageBase64}" style="max-width:100%; max-height:150px; border-radius:16px;"><br>` : "";
+            const myImg = myImageBase64 ? `<img src="${myImageBase64}" style="max-width:100%; max-height:150px; border-radius:16px;"><br>` : "";
+            
+            document.getElementById('openResultArea').innerHTML = `
+                <div style="background:#e3f2fd; padding:16px; border-radius:24px;">
+                    <h3 style="color:#1565c0;">💖 OPENED TIME CAPSULE 💖</h3>
+                    <p><strong>💌 Your Letter:</strong><br>${herLetter}</p>
+                    ${herImg}
+                    <p><strong>💌 My Letter:</strong><br>${myLetter}</p>
+                    ${myImg}
+                    <p style="color:#0d47a1; margin-top:15px;">✨ Our love, frozen in time. Forever. ✨</p>
+                </div>
+            `;
         } else {
-            document.getElementById('openResultArea').innerHTML = `⏳ Not yet! The capsule will open on ${capsuleUnlockDate}. Patience, love. ⏳`;
+            document.getElementById('openResultArea').innerHTML = "❌ Wrong secret code! The capsule remains sealed. ❌";
         }
     });
     
-    document.getElementById('herLetter').addEventListener('input', () => { if (!capsuleLocked) saveCapsuleToLocal(); });
-    document.getElementById('myLetter').addEventListener('input', () => { if (!capsuleLocked) saveCapsuleToLocal(); });
-    document.getElementById('unlockDate').addEventListener('change', () => { if (!capsuleLocked) saveCapsuleToLocal(); });
+    // Auto-save
+    document.getElementById('herLetter').addEventListener('input', () => { if (!capsuleLocked) saveCapsule(); });
+    document.getElementById('myLetter').addEventListener('input', () => { if (!capsuleLocked) saveCapsule(); });
+    document.getElementById('unlockDate').addEventListener('change', () => { if (!capsuleLocked) saveCapsule(); });
     
-    // Start everything
+    // Start
     initGame();
     loadCapsuleFromStorage();
+    setTimeout(() => updateCapsuleUI(), 100);
 </script>
 </body>
 </html>
