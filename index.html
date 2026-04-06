@@ -34,7 +34,6 @@
             border-radius: 48px;
             overflow: hidden;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
         }
 
         .screen {
@@ -212,6 +211,7 @@
             border: 2px solid #90caf9;
             border-radius: 40px;
             margin: 10px 0;
+            width: 100%;
         }
 
         .status-box {
@@ -226,9 +226,18 @@
         .locked-message {
             background: #ffccbc;
             color: #bf360c;
-            padding: 20px;
+            padding: 30px 20px;
             border-radius: 32px;
             text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .locked-message small {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #e65100;
         }
 
         .open-btn {
@@ -329,7 +338,6 @@
     let basketX = canvas.width / 2 - 30;
     const BASKET_WIDTH = 60;
     const BASKET_HEIGHT = 25;
-    let lastSpawnTime = 0;
     let frameCount = 0;
 
     class Heart {
@@ -337,7 +345,7 @@
             this.x = x;
             this.y = y;
             this.size = 16;
-            this.speed = 2.5; // mas mabilis
+            this.speed = 2.5;
         }
         
         draw() {
@@ -354,7 +362,6 @@
         }
     }
 
-    // Paisa-isang spawn
     function spawnSingleHeart() {
         if (!gameActive) return;
         if (hearts.length < 8) {
@@ -377,7 +384,6 @@
         ctx.fillStyle = "#e8f4ff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Decorative waves
         ctx.strokeStyle = "#bbdef5";
         ctx.lineWidth = 1;
         for (let i = 0; i < 5; i++) {
@@ -407,23 +413,19 @@
 
         frameCount++;
         
-        // Paisa-isang spawn - every 40 frames (approx 0.6 seconds)
         if (frameCount > 35 && hearts.length < 10) {
             spawnSingleHeart();
             frameCount = 0;
         }
         
-        // Small random chance for variety
         if (Math.random() < 0.02 && hearts.length < 6) {
             spawnSingleHeart();
         }
 
-        // Update hearts
         for (let i = 0; i < hearts.length; i++) {
             hearts[i].update();
         }
 
-        // Collision
         for (let i = hearts.length - 1; i >= 0; i--) {
             const h = hearts[i];
             if (h.y + 12 >= canvas.height - BASKET_HEIGHT - 8 &&
@@ -456,7 +458,6 @@
         animationId = requestAnimationFrame(updateGame);
     }
 
-    // Movement
     function handleMove(clientX) {
         if (!gameActive && caught >= 10) return;
         const rect = canvas.getBoundingClientRect();
@@ -487,7 +488,6 @@
         
         if (animationId) cancelAnimationFrame(animationId);
         
-        // Start with 1 heart
         setTimeout(() => spawnSingleHeart(), 200);
         
         animationId = requestAnimationFrame(updateGame);
@@ -502,7 +502,8 @@
     });
 
     // ==================== SECRET CODE ====================
-    const CORRECT_COURTSHIP_DATE = "2025-02-14"; // CHANGE THIS!
+    // ⭐ PALITAN ANG DATE NA ITO - ilagay ang exact date na pumayag siya ⭐
+    const CORRECT_COURTSHIP_DATE = "2025-02-14";
     
     function normalizeDate(input) {
         let cleaned = input.trim();
@@ -545,7 +546,6 @@
     let capsuleUnlockDate = null;
     let herImageBase64 = "", myImageBase64 = "";
     
-    // File handlers
     document.getElementById('herImage').addEventListener('change', (e) => {
         if (capsuleLocked) return;
         const file = e.target.files[0];
@@ -598,7 +598,7 @@
             myImageBase64 = data.myImage || "";
             
             if (herImageBase64) document.getElementById('herPreview').innerHTML = `<img src="${herImageBase64}"><br>📸 Saved`;
-            if (myImageBase64) document.getElementById('myPreview').innerHTML = `<img src="${myImageBase64}"><br>📸 Saved`;
+            if (myImageBase64) document.getElementById('herPreview').innerHTML = `<img src="${myImageBase64}"><br>📸 Saved`;
         }
     }
     
@@ -610,28 +610,25 @@
         const statusBox = document.getElementById('statusBox');
         
         if (!capsuleLocked) {
-            // Not locked yet - show editable
             editableDiv.style.display = "block";
             lockedMsgDiv.style.display = "none";
             openSectionDiv.style.display = "none";
             statusBox.innerHTML = "💭 Capsule not locked yet. Add your memories above!";
             statusBox.style.background = "#e3f2fd";
+            statusBox.style.color = "#1565c0";
         } else {
-            // Locked
             editableDiv.style.display = "none";
             
             if (today >= capsuleUnlockDate) {
-                // Date reached - show open button
                 lockedMsgDiv.style.display = "none";
                 openSectionDiv.style.display = "block";
                 statusBox.innerHTML = `🎉 The time has come! This capsule is ready to open on ${capsuleUnlockDate} 🎉`;
                 statusBox.style.background = "#c8e6c9";
                 statusBox.style.color = "#2e7d32";
             } else {
-                // Date not reached - show locked message
                 lockedMsgDiv.style.display = "block";
                 openSectionDiv.style.display = "none";
-                lockedMsgDiv.innerHTML = `🔒 COME BACK ON ${capsuleUnlockDate} 🔒<br><br>This time capsule is sealed until that date. Patience, love! 💙`;
+                lockedMsgDiv.innerHTML = `🔒⏳ COME BACK ON ${capsuleUnlockDate} ⏳🔒<br><br><small>This time capsule is sealed until that exact date. Patience, my love! 💙</small>`;
                 statusBox.innerHTML = `🔐 Capsule locked! Will open on ${capsuleUnlockDate}`;
                 statusBox.style.background = "#ffccbc";
                 statusBox.style.color = "#bf360c";
@@ -669,13 +666,11 @@
             return;
         }
         
-        // Ask for secret code
         const code = prompt("🔐 Enter the secret code (the date you said YES to my courtship):");
         if (!code) return;
         
         const normalized = normalizeDate(code);
         if (normalized === CORRECT_COURTSHIP_DATE) {
-            // Show capsule contents
             const herLetter = document.getElementById('herLetter').value || "(No letter)";
             const myLetter = document.getElementById('myLetter').value || "(No letter)";
             const herImg = herImageBase64 ? `<img src="${herImageBase64}" style="max-width:100%; max-height:150px; border-radius:16px;"><br>` : "";
@@ -696,15 +691,40 @@
         }
     });
     
-    // Auto-save
     document.getElementById('herLetter').addEventListener('input', () => { if (!capsuleLocked) saveCapsule(); });
     document.getElementById('myLetter').addEventListener('input', () => { if (!capsuleLocked) saveCapsule(); });
     document.getElementById('unlockDate').addEventListener('change', () => { if (!capsuleLocked) saveCapsule(); });
     
-    // Start
-    initGame();
-    loadCapsuleFromStorage();
-    setTimeout(() => updateCapsuleUI(), 100);
+    // ==================== CHECK CAPSULE STATUS ON LOAD ====================
+    function checkAndRedirect() {
+        const raw = localStorage.getItem('loveCapsule');
+        if (raw) {
+            const data = JSON.parse(raw);
+            if (data.locked === true) {
+                // Kapag nalock na, diretso sa capsule screen
+                document.getElementById('gameScreen').classList.add('hidden');
+                document.getElementById('codeScreen').classList.add('hidden');
+                document.getElementById('capsuleScreen').classList.remove('hidden');
+                loadCapsuleFromStorage();
+                updateCapsuleUI();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Start - check muna kung may locked capsule
+    const wasLocked = checkAndRedirect();
+    
+    if (!wasLocked) {
+        // Walang locked capsule, start sa game
+        initGame();
+        loadCapsuleFromStorage();
+    } else {
+        // May locked capsule, hindi na kailangan ang game
+        // Stop any game animation
+        if (animationId) cancelAnimationFrame(animationId);
+    }
 </script>
 </body>
 </html>
