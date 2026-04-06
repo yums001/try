@@ -44,7 +44,6 @@
             display: none !important;
         }
 
-        /* Game Styles */
         .game-header {
             display: flex;
             justify-content: space-between;
@@ -98,7 +97,6 @@
             font-weight: 500;
         }
 
-        /* Code Screen */
         .code-container {
             text-align: center;
         }
@@ -138,7 +136,6 @@
             margin-top: 10px;
         }
 
-        /* Capsule Styles */
         .capsule-header {
             text-align: center;
             color: #1565c0;
@@ -249,6 +246,26 @@
             margin: 20px 0;
             border-color: #90caf9;
         }
+
+        .share-box {
+            background: #fff3e0;
+            padding: 12px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .share-code {
+            background: #1565c0;
+            color: white;
+            padding: 8px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
@@ -284,7 +301,14 @@
                 <p>Store your memories here</p>
             </div>
 
-            <!-- EDITABLE SECTION (only visible when not locked) -->
+            <!-- Share instructions for live access -->
+            <div class="share-box" id="shareBox">
+                💡 <strong>Want to access this together?</strong><br>
+                Save this link and share it with your love:<br>
+                <div class="share-code" id="shareLinkCode">Loading...</div>
+                <small>Same link = same capsule! Bookmark this page on both phones.</small>
+            </div>
+
             <div id="editableSection">
                 <div class="two-columns">
                     <div class="column">
@@ -311,21 +335,33 @@
 
             <div id="statusBox" class="status-box"></div>
 
-            <!-- OPEN SECTION (only shows when date is reached) -->
             <div id="openSection" style="display: none;">
                 <hr>
                 <button id="attemptOpenBtn" class="blue-btn open-btn">📬 Open Time Capsule 📬</button>
                 <div id="openResultArea" class="preview" style="margin-top: 15px;"></div>
             </div>
 
-            <!-- LOCKED MESSAGE (shows when capsule is locked but date not reached) -->
             <div id="lockedMessage" class="locked-message" style="display: none;"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // ==================== GAME - ONE HEART AT A TIME ====================
+    // ==================== UNIQUE ID FOR THIS CAPSULE ====================
+    // Generate or get a unique ID for this capsule (para same link = same data)
+    let capsuleId = localStorage.getItem('capsuleId');
+    if (!capsuleId) {
+        capsuleId = 'capsule_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('capsuleId', capsuleId);
+    }
+    
+    // Display the shareable link
+    const shareLink = document.getElementById('shareLinkCode');
+    if (shareLink) {
+        shareLink.innerText = window.location.href;
+    }
+    
+    // ==================== GAME ====================
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 450;
@@ -347,26 +383,20 @@
             this.size = 16;
             this.speed = 2.5;
         }
-        
         draw() {
             ctx.save();
-            ctx.shadowBlur = 0;
             ctx.font = `${this.size}px "Segoe UI Emoji"`;
             ctx.fillStyle = "#ff3366";
             ctx.fillText("❤️", this.x - 8, this.y + 5);
             ctx.restore();
         }
-        
-        update() {
-            this.y += this.speed;
-        }
+        update() { this.y += this.speed; }
     }
 
     function spawnSingleHeart() {
         if (!gameActive) return;
         if (hearts.length < 8) {
-            let randX = 25 + Math.random() * (canvas.width - 50);
-            hearts.push(new Heart(randX, -15));
+            hearts.push(new Heart(25 + Math.random() * (canvas.width - 50), -15));
         }
     }
 
@@ -383,7 +413,6 @@
     function drawBackground() {
         ctx.fillStyle = "#e8f4ff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
         ctx.strokeStyle = "#bbdef5";
         ctx.lineWidth = 1;
         for (let i = 0; i < 5; i++) {
@@ -396,9 +425,8 @@
 
     function draw() {
         drawBackground();
-        for (let heart of hearts) heart.draw();
+        hearts.forEach(h => h.draw());
         drawBasket();
-        
         ctx.fillStyle = "#1565c0";
         ctx.font = "12px 'Segoe UI'";
         ctx.fillText("← slide →", canvas.width/2 - 30, 30);
@@ -410,22 +438,15 @@
             animationId = requestAnimationFrame(updateGame);
             return;
         }
-
         frameCount++;
-        
         if (frameCount > 35 && hearts.length < 10) {
             spawnSingleHeart();
             frameCount = 0;
         }
+        if (Math.random() < 0.02 && hearts.length < 6) spawnSingleHeart();
         
-        if (Math.random() < 0.02 && hearts.length < 6) {
-            spawnSingleHeart();
-        }
-
-        for (let i = 0; i < hearts.length; i++) {
-            hearts[i].update();
-        }
-
+        hearts.forEach(h => h.update());
+        
         for (let i = hearts.length - 1; i >= 0; i--) {
             const h = hearts[i];
             if (h.y + 12 >= canvas.height - BASKET_HEIGHT - 8 &&
@@ -434,7 +455,6 @@
                 if (gameActive && caught < 10) {
                     caught++;
                     document.getElementById('heartCount').innerText = caught;
-                    
                     if (caught === 10) {
                         gameActive = false;
                         document.getElementById('gameMessage').innerHTML = "🎉 PERFECT! 10 hearts caught! 🎉";
@@ -448,12 +468,8 @@
                 }
                 continue;
             }
-            
-            if (h.y - 12 > canvas.height + 50) {
-                hearts.splice(i, 1);
-            }
+            if (h.y - 12 > canvas.height + 50) hearts.splice(i, 1);
         }
-
         draw();
         animationId = requestAnimationFrame(updateGame);
     }
@@ -468,14 +484,8 @@
     }
 
     canvas.addEventListener('mousemove', (e) => handleMove(e.clientX));
-    canvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (e.touches[0]) handleMove(e.touches[0].clientX);
-    });
-    canvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        if (e.touches[0]) handleMove(e.touches[0].clientX);
-    });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (e.touches[0]) handleMove(e.touches[0].clientX); });
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if (e.touches[0]) handleMove(e.touches[0].clientX); });
 
     function initGame() {
         hearts = [];
@@ -485,11 +495,8 @@
         document.getElementById('heartCount').innerText = "0";
         document.getElementById('gameMessage').innerHTML = "💙 Move left/right to catch hearts! 💙";
         basketX = canvas.width / 2 - BASKET_WIDTH / 2;
-        
         if (animationId) cancelAnimationFrame(animationId);
-        
         setTimeout(() => spawnSingleHeart(), 200);
-        
         animationId = requestAnimationFrame(updateGame);
     }
 
@@ -582,12 +589,18 @@
             myLetter: document.getElementById('myLetter').value,
             herImage: herImageBase64,
             myImage: myImageBase64,
+            capsuleId: capsuleId
         };
-        localStorage.setItem('loveCapsule', JSON.stringify(data));
+        localStorage.setItem('loveCapsule_' + capsuleId, JSON.stringify(data));
+        // Also save a master key para alam na may locked capsule
+        if (capsuleLocked) {
+            localStorage.setItem('capsuleLocked_' + capsuleId, 'true');
+            localStorage.setItem('capsuleUnlockDate_' + capsuleId, capsuleUnlockDate);
+        }
     }
     
     function loadCapsuleFromStorage() {
-        const raw = localStorage.getItem('loveCapsule');
+        const raw = localStorage.getItem('loveCapsule_' + capsuleId);
         if (raw) {
             const data = JSON.parse(raw);
             capsuleLocked = data.locked || false;
@@ -598,7 +611,7 @@
             myImageBase64 = data.myImage || "";
             
             if (herImageBase64) document.getElementById('herPreview').innerHTML = `<img src="${herImageBase64}"><br>📸 Saved`;
-            if (myImageBase64) document.getElementById('herPreview').innerHTML = `<img src="${myImageBase64}"><br>📸 Saved`;
+            if (myImageBase64) document.getElementById('myPreview').innerHTML = `<img src="${myImageBase64}"><br>📸 Saved`;
         }
     }
     
@@ -656,6 +669,7 @@
         capsuleUnlockDate = unlockDate;
         saveCapsule();
         updateCapsuleUI();
+        alert("✅ Capsule locked! Share the link with your love. Even after refresh, it will stay locked until " + unlockDate);
     });
     
     document.getElementById('attemptOpenBtn').addEventListener('click', () => {
@@ -697,32 +711,26 @@
     
     // ==================== CHECK CAPSULE STATUS ON LOAD ====================
     function checkAndRedirect() {
-        const raw = localStorage.getItem('loveCapsule');
-        if (raw) {
-            const data = JSON.parse(raw);
-            if (data.locked === true) {
-                // Kapag nalock na, diretso sa capsule screen
-                document.getElementById('gameScreen').classList.add('hidden');
-                document.getElementById('codeScreen').classList.add('hidden');
-                document.getElementById('capsuleScreen').classList.remove('hidden');
-                loadCapsuleFromStorage();
-                updateCapsuleUI();
-                return true;
-            }
+        const isLocked = localStorage.getItem('capsuleLocked_' + capsuleId);
+        if (isLocked === 'true') {
+            // May locked capsule, diretso sa capsule screen
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('codeScreen').classList.add('hidden');
+            document.getElementById('capsuleScreen').classList.remove('hidden');
+            loadCapsuleFromStorage();
+            updateCapsuleUI();
+            return true;
         }
         return false;
     }
     
-    // Start - check muna kung may locked capsule
+    // Start
     const wasLocked = checkAndRedirect();
     
     if (!wasLocked) {
-        // Walang locked capsule, start sa game
         initGame();
         loadCapsuleFromStorage();
     } else {
-        // May locked capsule, hindi na kailangan ang game
-        // Stop any game animation
         if (animationId) cancelAnimationFrame(animationId);
     }
 </script>
